@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import Alunos
 
 def index(request):
     alunos = {
@@ -12,4 +13,10 @@ def index(request):
     return render(request, 'index.html', dados)
 
 def aluno(request):
-    return render(request, 'aluno.html')
+    alunos = {
+        1:Alunos
+    }
+    dados = {
+        'aluno' : alunos
+    }
+    return render(request, 'aluno.html', dados)
