@@ -1,22 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_list_or_404, get_object_or_404
 from .models import Alunos
+from django.forms import ModelForm
+
+class AlunosForm(ModelForm):
+    class Meta:
+        model = Alunos
+        fields = ['nome_aluno', 'descricao_profissional', 'descricao_pessoal', 'habilidades', 'comportamento', 'workspace', 'categoria', 'date_aluno']
 
 def index(request):
-    alunos = {
-        1:'Marcio',
-        2:'Haiko',
-        3:'Larissa'
-    }
-    dados = {
-        'nome_do_aluno':alunos
-    }
-    return render(request, 'index.html', dados)
+    aluno = Alunos.objects.all()
+    alunos = {'alunos':aluno}
+    return render(request, 'index.html', alunos)
 
-def aluno(request):
-    alunos = {
-        1:Alunos
-    }
-    dados = {
-        'aluno' : alunos
-    }
-    return render(request, 'aluno.html', dados)
+
+def aluno(request, aluno_id):
+    alunos = get_object_or_404(Alunos, pk=aluno_id)
+    aluno_a_exibir = {'aluno':alunos}
+    
+    return render(request, 'aluno.html', aluno_a_exibir)
