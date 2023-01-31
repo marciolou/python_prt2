@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi import status
+from fastapi import Response
+from fastapi import Path
 from models import Funcionarios
 
 app = FastAPI()
@@ -21,7 +23,7 @@ async def get_funcionarios():
     return funcionarios
 
 @app.get('/funcionarios/{funcio_id}')
-async def get_funcionario(funcio_id: int):
+async def get_funcionario(funcio_id: int = Path(default=None, title='ID Funcionarios', description='deve ter de 1 à 4', gt=0, lt=4)):
     try:
         pessoa = funcionarios[funcio_id]
         funcionarios.update({'id':funcio_id})
@@ -31,11 +33,30 @@ async def get_funcionario(funcio_id: int):
             status_code = status.HTTP_404_NOT_FOUND, detail = 'Funcionario não encontrado'
         )
 
-@app.post('/funcionarios')
+@app.get('/calculadora')
+async def calcular(a, b, c): 
+    soma = a + b + c
+
+@app.post('/funcionarios', status_code=status.HTTP_201_CREATED)
 async def post_funcionarios(funcio_id: Funcionarios):
-    next_id = len(funcionarios)
+    next_id:int = len(funcionarios) +1
     funcionarios[next_id] = funcio_id
     return funcio_id
+
+@app.put('/funcionarios/{funcio_id}')
+async def put_funcionarios(funcio_id:int, funci: Funcionarios):
+    if funcio_id in funcionarios:
+        funcionarios[funcio_id] = funci
+    else:
+        HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = 'Funcionario não encontrado')
+
+@app.delete('/funcionarios/{funcio_id}')
+async def delete_funcionarios(funcio_id:int):
+    if funcio_id in funcionarios:
+        del funcionarios[funcio_id]
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    else:
+        HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = 'Funcionario não encontrado')
 
 if __name__ == '__main__':
     import uvicorn
