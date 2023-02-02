@@ -2,31 +2,37 @@ from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi import status
 from fastapi import Response
-from fastapi import Path
-from models import Funcionarios
+from fastapi import Path, Query, Header, Depends
+from typing import Any, Dict, List
+from models import Funcionarios, funcionarios
+from time import sleep
 
-app = FastAPI()
+app = FastAPI(
+    title='MoreDevs2Blu',
+    version='007',
+    description='FastAPI'
+)
 
-@app.get('/')
+def db():
+    try:
+        print('conexão com banco')
+        sleep(1)
+    finally:
+        print('conexão com banco')
+        sleep(1)
+
+@app.get('/', description='Pagina Inicial', summary='Começo de tudo')
 async def raiz():
     return {'mensagem': 'Hello World'}
-
-funcionarios = {
-    1:{'nome': 'Marcio', 'idade':28, 'email':'teste@gmail.com'},
-    2:{'nome': 'Daniel', 'idade':28, 'email':'teste@gmail.com'},
-    3:{'nome': 'Fabio', 'idade':28, 'email':'teste@gmail.com'},
-    4:{'nome': 'Robin', 'idade':28, 'email':'teste@gmail.com'},
-}
 
 @app.get('/funcionarios')
 async def get_funcionarios():
     return funcionarios
 
 @app.get('/funcionarios/{funcio_id}')
-async def get_funcionario(funcio_id: int = Path(default=None, title='ID Funcionarios', description='deve ter de 1 à 4', gt=0, lt=4)):
+async def get_funcionario(funcio_id: int = Path(default=None, title='ID Funcionarios', description='deve ter de 1 à 4', gt=0, lt=4), db: Any = Depends(db)):
     try:
         pessoa = funcionarios[funcio_id]
-        funcionarios.update({'id':funcio_id})
         return pessoa
     except KeyError:
         raise HTTPException(
@@ -34,8 +40,12 @@ async def get_funcionario(funcio_id: int = Path(default=None, title='ID Funciona
         )
 
 @app.get('/calculadora')
-async def calcular(a, b, c): 
-    soma = a + b + c
+async def calcular(a: int = Query(default=None, gt=5), b: int = Query(default=None, gt=5), c: int = Query(default=None, gt=5), xdevs: str = Header(default=None)): 
+    soma = a + b
+    if c:
+        soma = soma + c
+    print(f'devs: {xdevs}')
+    return soma
 
 @app.post('/funcionarios', status_code=status.HTTP_201_CREATED)
 async def post_funcionarios(funcio_id: Funcionarios):
