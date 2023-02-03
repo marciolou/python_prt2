@@ -50,7 +50,8 @@ async def calcular(a: int = Query(default=None, gt=5), b: int = Query(default=No
 @app.post('/funcionarios', status_code=status.HTTP_201_CREATED)
 async def post_funcionarios(funcio_id: Funcionarios):
     next_id:int = len(funcionarios) +1
-    funcionarios[next_id] = funcio_id
+    funcio_id.id = next_id
+    funcionarios.append(funcio_id)
     return funcio_id
 
 @app.put('/funcionarios/{funcio_id}')
