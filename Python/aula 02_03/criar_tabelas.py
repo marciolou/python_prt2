@@ -1,6 +1,7 @@
 from core.configs import settings
 from core.database import engine
 from models.aluno_models import AlunoModel
+from models.usuario_models import UsuarioModel
 
 print('Executando documento criar_tabelas')
 async def create_tables():
