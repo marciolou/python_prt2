@@ -6,6 +6,6 @@ class Settings(BaseSettings):
     DB_URL: str = 'postgresql+asyncpg://teste:123456@localhost:5433/postgres'
     DB_BaseModel = declarative_base()
 
-class Config:
-    case_sensitive = True
+    class Config:
+        case_sensitive = True
 settings = Settings()
