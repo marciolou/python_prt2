@@ -1,1 +1,1 @@
-from aluno_model import AlunoModel
+from Models.aluno_model import AlunoModel

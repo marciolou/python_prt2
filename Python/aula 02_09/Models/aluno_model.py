@@ -1,9 +1,9 @@
-from Core.configs import settings
-from sqlalchemy import Column, Integer, String
+from typing import Optional
+from sqlmodel import Field, SQLModel 
 
-class AlunoModel(settings.DB_BaseModel):
-    __tablename__ = 'alunos'
+class AlunoModel(SQLModel, table=True):
+    __tablename__: str = 'alunos'
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    nome: str = Column(String(40))
-    email: str = Column(String(40))
+    id: Optional[int] = Field(default=None, primary_key=True)
+    nome: str
+    email: str
