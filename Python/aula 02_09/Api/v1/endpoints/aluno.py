@@ -46,17 +46,12 @@ async def get_aluno(aluno_id : int , db: AsyncSession = Depends(get_session)):
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=AlunoModel)
 async def post_aluno(aluno: AlunoModel, db : AsyncSession = Depends(get_session)):
 
-    novo_aluno = AlunoModel(nome= aluno.nome, idade= aluno.idade, email=aluno.email)
+    novo_aluno = AlunoModel(nome= aluno.nome, email=aluno.email)
 
     db.add(novo_aluno)
     await db.commit()
 
     return novo_aluno
-
-
-
-
-
 
 @router.put('/{aluno_id}', status_code=status.HTTP_202_ACCEPTED, response_model=AlunoModel)
 async def put_aluno(aluno_id : int, aluno: AlunoModel , db: AsyncSession = Depends(get_session)):
@@ -69,7 +64,6 @@ async def put_aluno(aluno_id : int, aluno: AlunoModel , db: AsyncSession = Depen
 
         if aluno_up:
             aluno_up.nome = aluno.nome
-            aluno_up.idade = aluno.idade
             aluno_up.email = aluno.email
 
             await session.commit()
